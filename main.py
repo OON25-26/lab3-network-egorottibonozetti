@@ -25,5 +25,21 @@ class Signal_information:
 
 
 class Node:
-    def __init__(self, label: string, position: tuple(float, float), connected_nodes: list[string], successive: dict[Line]):
-        self.signal_power = signal_power
+    def __init__(self, node_dict: dict):
+        self.label = node_dict['label']  # string
+        self.position = tuple(node_dict['position'])  # (float, float)
+        self.connected_nodes = node_dict['connected_nodes']  # list[string]
+        self.successive = {}  # dict[Line]
+
+    def propagate(self, signal_information):
+        # Remove the current node from the signal path
+        if signal_information.path:
+            signal_information.path.pop(0)
+
+        # If there are still nodes left to visit
+        if signal_information.path:
+            next_node = signal_information.path[0]
+            line = self.successive[self.label + next_node]
+
+            # Propagate signal information to the next line
+            line.propagate(signal_information)
